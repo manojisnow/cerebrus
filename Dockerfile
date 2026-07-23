@@ -21,7 +21,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     ca-certificates \
     default-jdk \
     maven \
-    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Syft (uses standard amd64/arm64 naming)
@@ -45,14 +44,13 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG TARGETARCH
 ARG TRIVY_VERSION=0.72.0
 ARG GRYPE_VERSION=0.116.0
-ARG GITLEAKS_VERSION=8.24.2
+ARG GITLEAKS_VERSION=8.30.1
 ARG SEMGREP_VERSION=1.59.0
-ARG HADOLINT_VERSION=2.12.0
-ARG CHECKOV_VERSION=3.2.495
+ARG HADOLINT_VERSION=2.14.0
+ARG CHECKOV_VERSION=3.3.8
 ARG KUBESCAPE_VERSION=3.0.45
 ARG KUBEAUDIT_VERSION=0.22.1
 ARG HELM_VERSION=3.21.3
-ARG DEPENDENCY_CHECK_VERSION=9.0.7
 ARG SPOTBUGS_VERSION=4.10.3
 
 # Install Trivy (uses Linux-64bit/Linux-ARM64 naming)
@@ -89,7 +87,7 @@ RUN case "${TARGETARCH}" in \
       amd64) HL_ARCH="x86_64" ;; \
       arm64) HL_ARCH="arm64" ;; \
     esac && \
-    curl -sSfL "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-${HL_ARCH}" -o /usr/local/bin/hadolint && \
+    curl -sSfL "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-linux-${HL_ARCH}" -o /usr/local/bin/hadolint && \
     chmod +x /usr/local/bin/hadolint
 
 # Install Checkov
@@ -114,13 +112,6 @@ RUN curl -sSfL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.ta
     tar -xzf helm.tar.gz "linux-${TARGETARCH}/helm" && \
     mv "linux-${TARGETARCH}/helm" /usr/local/bin/helm && \
     rm -rf helm.tar.gz "linux-${TARGETARCH}"
-
-# Install OWASP Dependency-Check (Java — architecture-independent)
-RUN curl -sSfL "https://github.com/jeremylong/DependencyCheck/releases/download/v${DEPENDENCY_CHECK_VERSION}/dependency-check-${DEPENDENCY_CHECK_VERSION}-release.zip" -o dependency-check.zip && \
-    unzip dependency-check.zip && \
-    mv dependency-check /opt/ && \
-    ln -s /opt/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check && \
-    rm dependency-check.zip
 
 # Install SpotBugs (Java — architecture-independent)
 RUN curl -sSfL "https://github.com/spotbugs/spotbugs/releases/download/${SPOTBUGS_VERSION}/spotbugs-${SPOTBUGS_VERSION}.tgz" -o spotbugs.tgz && \

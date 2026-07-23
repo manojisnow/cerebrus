@@ -9,19 +9,18 @@ from typing import Dict, List
 
 
 class DependencyScanner:
-    """Scans dependencies for known vulnerabilities using OWASP Dependency-Check and Trivy"""
-    
+    """Scans dependencies for known vulnerabilities using Trivy"""
+
     def __init__(self, config: dict):
         """
         Initialize DependencyScanner
-        
+
         Args:
             config: Main configuration dictionary
         """
         self.config = config
         self.scanner_config = config.get('scanners', {}).get('dependencies', {})
-        self.tools = self.scanner_config.get('tools', ['owasp-dependency-check', 'trivy'])
-        self.nvd_api_key = self.scanner_config.get('nvd_api_key', '')
+        self.tools = self.scanner_config.get('tools', ['trivy'])
         self.timeout = config.get('performance', {}).get('scanner_timeout', 1800)
     
     def scan(self, repo_path: str, artifacts: Dict) -> Dict:

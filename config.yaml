@@ -27,11 +27,7 @@ scanners:
     enabled: true
     tools:
       - trivy
-    # OWASP Dependency-Check disabled by default due to database initialization requirements
-    # To enable, add 'owasp-dependency-check' to tools list and ensure NVD database is initialized
-    # NVD API key for faster OWASP Dependency-Check updates (optional)
-    nvd_api_key: ""
-  
+
   iac:
     enabled: true
     tools:

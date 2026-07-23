@@ -48,7 +48,7 @@ ARG GITLEAKS_VERSION=8.30.1
 ARG SEMGREP_VERSION=1.171.0
 ARG HADOLINT_VERSION=2.14.0
 ARG CHECKOV_VERSION=3.3.8
-ARG KUBESCAPE_VERSION=3.0.45
+ARG KUBESCAPE_VERSION=4.0.11
 ARG KUBEAUDIT_VERSION=0.22.1
 ARG HELM_VERSION=3.21.3
 ARG SPOTBUGS_VERSION=4.10.3
@@ -93,12 +93,8 @@ RUN case "${TARGETARCH}" in \
 # Install Checkov
 RUN pip install --no-cache-dir "checkov==${CHECKOV_VERSION}"
 
-# Install Kubescape (uses kubescape-ubuntu-latest/kubescape-arm64-ubuntu-latest naming)
-RUN case "${TARGETARCH}" in \
-      amd64) KS_ARCH="kubescape-ubuntu-latest" ;; \
-      arm64) KS_ARCH="kubescape-arm64-ubuntu-latest" ;; \
-    esac && \
-    curl -sSfL "https://github.com/kubescape/kubescape/releases/download/v${KUBESCAPE_VERSION}/${KS_ARCH}" -o /usr/local/bin/kubescape && \
+# Install Kubescape (v4 uses standard amd64/arm64 naming, matching TARGETARCH directly)
+RUN curl -sSfL "https://github.com/kubescape/kubescape/releases/download/v${KUBESCAPE_VERSION}/kubescape_${KUBESCAPE_VERSION}_linux_${TARGETARCH}" -o /usr/local/bin/kubescape && \
     chmod +x /usr/local/bin/kubescape
 
 # Install Kubeaudit (uses standard amd64/arm64 naming)
